@@ -1,10 +1,11 @@
 #!/bin/bash
 
-fifo_name="rfid_data"
-
 while true
 do
-    if read line; then
-        echo $line `date` > result.txt
+    if read line <"rfid_data"; then
+        echo $line `date` >> result.txt
     fi
-done <"$fifo_name"  
+    if read pass <"keypad_data" && [[ "$pass" == '1337' ]]; then
+        echo "Successful entry" >> result.txt
+    fi
+done 
