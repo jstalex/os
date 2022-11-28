@@ -1,11 +1,10 @@
 #!/bin/bash
 
+./stage-03-01.sh &
+
 while true
 do
-    if read line <"rfid_data"; then
-        echo $line `date` >> result.txt
-    fi
-    if read pass <"keypad_data" && [[ "$pass" == '1337' ]]; then
+    if read pass && [[ "$pass" == '1337' ]]; then
         echo "Successful entry" >> result.txt
     fi
-done 
+done <"keypad_data"
