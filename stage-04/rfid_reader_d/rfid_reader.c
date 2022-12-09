@@ -27,6 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "MFRC522.h"
+// #include "time.h"
 
 int debug = 0;
 
@@ -60,6 +61,13 @@ int main(int argc, char *argv[])
 	unsigned char blockno;
 	char *next;
 
+
+	time_t     now;
+    struct tm  ts;
+    char       buf[80];
+
+    
+
 	MFRC522_Init(0);
 	while (1) {
 		while ((status = MFRC522_Request(PICC_REQIDL, &backBits)) !=
@@ -80,8 +88,16 @@ int main(int argc, char *argv[])
 				fflush(stdout);
 				break;
 			}
-			printf("%02x %02x %02x %02x\n", uid[0], uid[1], uid[2],
-			       uid[3]);
+
+			// Get current time
+    		time(&now);
+
+    		// Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
+    		ts = *localtime(&now);
+    		strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
+
+			printf("%02x %02x %02x %02x  %s\n", uid[0], uid[1], uid[2],
+			       uid[3], buf);
 			fflush(stdout);
 			sleep(1);
 		}
