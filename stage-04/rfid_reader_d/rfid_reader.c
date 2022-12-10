@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 			}
 
 			if (argv[2] != "") {
-				fifo_fd = open(argv[2], O_RDWR);
+				fifo_fd = open(argv[2], 2); // O_RDWR
 			}
 		}
 	}
