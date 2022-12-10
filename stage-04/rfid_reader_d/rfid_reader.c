@@ -43,6 +43,7 @@ void help()
 int main(int argc, char *argv[])
 {
 	int quiet = 0;
+	int fifo_fd;
 	if (argc > 1) {
 		if ((strcmp(argv[1], "-h") == 0)) {
 			help();
@@ -50,6 +51,10 @@ int main(int argc, char *argv[])
 		} else {
 			if ((strcmp(argv[1], "-q") == 0)) {
 				quiet = 1;
+			}
+
+			if (argv[2] != "") {
+				fifo_fd = open(argv[2], O_RDWR);
 			}
 		}
 	}
@@ -62,10 +67,10 @@ int main(int argc, char *argv[])
 	char *next;
 
 
-	time_t     now;
-    struct tm  ts;
-    char       buf[80];
-
+	//time_t     now;
+    //struct tm  ts;
+    //char       buf[80];
+	char *str_for_fifo;
     
 
 	MFRC522_Init(0);
@@ -90,16 +95,18 @@ int main(int argc, char *argv[])
 			}
 
 			// Get current time
-    		time(&now);
+    		//time(&now);
 
     		// Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
-    		ts = *localtime(&now);
-    		strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
+    		//ts = *localtime(&now);
+    		//strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
 
-			printf("%02x %02x %02x %02x  %s\n", uid[0], uid[1], uid[2],
-			       uid[3], buf);
-			fflush(stdout);
+			sprintf(str_for_fifo, "%02x %02x %02x %02x  %s\n", uid[0], uid[1], uid[2], uid[3]);
+
+			write(fifo_fd, str_for_fifo, strlen(str_for_fifo) + 1);
+			//fflush(stdout);
 			sleep(1);
 		}
 	}
+	close(fifo_fd);
 }
