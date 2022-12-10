@@ -1,7 +1,14 @@
 #!/bin/bash
 
+# it will be initial script, rfid reader and keypad will be launching here
+
+# sudo ./keypad_v8_asp -q keypad_data &
+# pid1=$!
+# sudo ./rfid_reader_asp -q rfid_data &
+# pid2=$!
+
 ./stage-03-01.sh &
-pid=$!
+pid3=$!
 
 pass=""
 flag=1
@@ -29,4 +36,4 @@ do
     fi
 done <"keypad_data"
 
-kill $pid
+kill $pid1 $pid2 $pid3
