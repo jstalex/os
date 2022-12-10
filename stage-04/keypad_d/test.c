@@ -104,12 +104,16 @@ void help()
 int main(int argc, char *argv[])
 {
 	int quiet = 0;
+	int fifo_fd;
 	if (argc > 1) {
 		if ((strcmp(argv[1], "-h") == 0)) {
 			help();
 			return 0;
 		} else if ((strcmp(argv[1], "-q") == 0)) {
 			quiet = 1;
+			if (argv[2] != "") {
+				fifo_fd = open(argv[2], 2); // O_RDWR
+			}
 		} else {
 			help();
 			return 0;
@@ -120,15 +124,19 @@ int main(int argc, char *argv[])
 	while (1) {
 		char x = get_key();
 		if (x) {
-			if (!quiet)
+			if (!quiet){
 				printf("pressed: %c\n", x);
-			else
-				printf("%c\n", x);
+			}
+			else{
+				//printf("%c\n", x);
+				write(fifo_fd, x, 2);
+			}
 		} else if (!quiet)
 			printf("no key pressed\n");
 		time_sleep(0.5);
 		fflush(stdout);
 	}
 	gpioTerminate();
+	close(fifo_fd);
 	return 0;
 }
