@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 	char readed_uid[12];
 
 	FILE *res;
-    res = fopen("result.txt", "A");
 
 	MFRC522_Init(0);
 	while (1) {
@@ -104,13 +103,15 @@ int main(int argc, char *argv[])
 
 			sprintf(readed_uid, "%02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
 			if (strcmp(readed_uid, "<write here>") == 0){
+				res = fopen("result.txt", "a");
 				fprintf(res, "%s %s\n", "True RFID key", get_time());
+				fclose(res);
 			}
-
+			
 			fflush(stdout);
 			sleep(1);
 		}
 	}
 	close(fifo_fd);
-	fclose(res);
+	
 }
