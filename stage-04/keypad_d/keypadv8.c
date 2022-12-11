@@ -59,7 +59,7 @@ int findHighCol()
 	return -1;
 }
 
-char get_key()
+const char get_key()
 {
 	int colIndex;
 
@@ -77,6 +77,15 @@ char get_key()
 	pressedKey = '\0';
 	return pressedKey;
 }
+
+const char *get_time(){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    static char str[30];
+    sprintf(str, "%d-%02d-%02d %02d:%02d:%02d",tm.tm_mday, tm.tm_mon + 1,tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    return str;
+}
+
 
 void help()
 {
@@ -96,27 +105,71 @@ int main(int argc, char *argv[])
 			return 0;
 		} else if ((strcmp(argv[1], "-q") == 0)) {
 			quiet = 1;
+			if (argv[2] != "") {
+				// fifo_fd = open(argv[2], O_RDWR); // O_RDWR
+			}
 		} else {
 			help();
 			return 0;
 		}
 	}
+
 	gpioInitialise();
 	init_keypad();
-	system("clear");
+	//system("clear");
+
+	FILE *res;
+    res = fopen("result.txt", "a");
+
+    char x = '\0';
+    // char line[10];
+    char pass[4] = { '\0' };
+    char temp[2];
+    int curr_ind = 0;
+
+
 	while (1) {
-		char x = get_key();
+		const char x = get_key();
 		if (x) {
-			if (!quiet)
+			if (!quiet) {
 				printf("pressed: %c\n", x);
-			else
-				printf("%c\n", x);
+			}
+			else {
+				// printf("%c\n", x);
+				sprintf(temp, "%c", x);
+				// printf("index = %d, x = %s, temp = %s\n", curr_ind, temp, temp);
+				if (curr_ind < 4) {
+					strncat(pass, temp, 1);    
+					curr_ind++;
+				}
+				else {
+					curr_ind = 0;
+				}
+				printf("%s\n", pass);
+
+				if (strcmp(pass, "1337") == 0){
+					// printf("%s\n", "im here");
+					fprintf(res, "%s %s\n", "True Pass", get_time());
+					char pass[4] = { '\0' };
+					curr_ind = 0;
+				}
+
+				if (curr_ind == 3) {
+					if (strcmp(pass, "1337") == 0){
+						printf("%s\n", "im here");
+						char pass[4] = { '\0' };
+						fprintf(res, "%s\n", "True Pass");
+						curr_ind = 0;
+					}
+				}
+			}
 		} else if (!quiet)
 			printf("no key pressed\n");
 		time_sleep(0.5);
 		fflush(stdout);
-		system("clear");
+		//system("clear");
 	}
+	fclose(res);
 	gpioTerminate();
 	return 0;
 }
