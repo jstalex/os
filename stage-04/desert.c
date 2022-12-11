@@ -16,10 +16,9 @@ const char *get_time(){
 int main(int argc, char *argv[])
 {
 	FILE *res;
-    res = fopen("result.txt", "A");
 
     char x = '\0';
-    // char line[10];
+    char line[10];
     char pass[4] = { '\0' };
     char temp[2];
     int curr_ind = 0;
@@ -27,37 +26,34 @@ int main(int argc, char *argv[])
     while (1) { 
         //scanf("%s", &temp);
         //sprintf(temp, "%s", line);
-        if (x) {
-            sprintf(temp, "%c", x);
+        
+        fgets(line, 10, stdin);
+
+        if (1) {
+            // sprintf(temp, "%s", line);
             // printf("index = %d, x = %s, temp = %s\n", curr_ind, temp, temp);
             if (curr_ind < 4) {
-                strncat(pass, temp, 1);    
+                strncat(pass, line, 1);    
                 curr_ind++;
             }
-            else {
-                curr_ind = 0;
-            }
-            printf("%s\n", pass);
-
+            // printf("%s\n", pass);
             if (strcmp(pass, "1337") == 0){
-                // printf("%s\n", "im here");
-                fprintf(res, "%s\n", "True Pass");
-                char pass[4] = { '\0' };
+                printf("%s\n", "im here");
+
+                res = fopen("result.txt", "a");
+                fprintf(res, "%s %s\n", "True Pass", get_time());
+                fclose(res);
+
+                strcpy(pass, "");
                 curr_ind = 0;
             }
-
-            if (curr_ind == 3) {
-                if (strcmp(pass, "1337") == 0){
-                    printf("%s\n", "im here");
-                    char pass[4] = { '\0' };
-                    fprintf(res, "%s\n", "True Pass");
-                    curr_ind = 0;
-                }
+            if (line[0] == (char)'#'){
+                printf("%s\n", "im here again");
+                strcpy(pass, "");
+                curr_ind = 0;
             }
         }
     }
-
-    fclose(res);
     return 0;
 }
 

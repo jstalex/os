@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<time.h>
 #include <pigpio.h>
 #define ROWS 4
 #define COLS 3
@@ -119,9 +120,8 @@ int main(int argc, char *argv[])
 	//system("clear");
 
 	FILE *res;
-    res = fopen("result.txt", "a");
 
-    char x = '\0';
+    // char x = '\0';
     // char line[10];
     char pass[4] = { '\0' };
     char temp[2];
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
 
 	while (1) {
-		const char x = get_key();
+		char x = get_key();
 		if (x) {
 			if (!quiet) {
 				printf("pressed: %c\n", x);
@@ -142,34 +142,31 @@ int main(int argc, char *argv[])
 					strncat(pass, temp, 1);    
 					curr_ind++;
 				}
-				else {
-					curr_ind = 0;
-				}
-				printf("%s\n", pass);
-
+				// printf("%s\n", pass);
 				if (strcmp(pass, "1337") == 0){
 					// printf("%s\n", "im here");
+
+					res = fopen("result.txt", "a");
 					fprintf(res, "%s %s\n", "True Pass", get_time());
-					char pass[4] = { '\0' };
+					fclose(res);
+
+					strcpy(pass, "");
 					curr_ind = 0;
 				}
 
-				if (curr_ind == 3) {
-					if (strcmp(pass, "1337") == 0){
-						printf("%s\n", "im here");
-						char pass[4] = { '\0' };
-						fprintf(res, "%s\n", "True Pass");
-						curr_ind = 0;
-					}
+				if (x == (char)'#'){
+					// printf("%s\n", "im here again");
+					strcpy(pass, "");
+					curr_ind = 0;
 				}
 			}
 		} else if (!quiet)
 			printf("no key pressed\n");
+
 		time_sleep(0.5);
 		fflush(stdout);
 		//system("clear");
 	}
-	fclose(res);
 	gpioTerminate();
 	return 0;
 }
