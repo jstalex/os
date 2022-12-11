@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "MFRC522.h"
-// #include "time.h"
+#include "time.h"
 
 int debug = 0;
 
@@ -39,6 +39,15 @@ void help()
 	printf("    -h - help\n");
 	printf("    -q - quiet\n");
 }
+
+const char *get_time(){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    static char str[30];
+    sprintf(str, "%d-%02d-%02d %02d:%02d:%02d",tm.tm_mday, tm.tm_mon + 1,tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    return str;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -66,12 +75,11 @@ int main(int argc, char *argv[])
 	unsigned char blockno;
 	char *next;
 
+	char true_uid[12];
+	char readed_uid[12];
 
-	//time_t     now;
-    //struct tm  ts;
-    //char       buf[80];
-	char *str_for_fifo;
-    
+	FILE *res;
+    res = fopen("result.txt", "A");
 
 	MFRC522_Init(0);
 	while (1) {
@@ -87,26 +95,22 @@ int main(int argc, char *argv[])
 
 		if (status == MI_OK) {
 			// print UID
-			if (!quiet) {
-				printf("%02x %02x %02x %02x\n", uid[0], uid[1],
-				       uid[2], uid[3]);
-				fflush(stdout);
-				break;
+			//if (!quiet) {
+			//	printf("%02x %02x %02x %02x\n", uid[0], uid[1],
+			//	       uid[2], uid[3]);
+			//	fflush(stdout);
+			//	break;
+			//}
+
+			sprintf(readed_uid, "%02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
+			if (strcmp(readed_uid, "<write here>") == 0){
+				fprintf(res, "%s %s\n", "True RFID key", get_time());
 			}
 
-			// Get current time
-    		//time(&now);
-
-    		// Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
-    		//ts = *localtime(&now);
-    		//strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
-
-			sprintf(str_for_fifo, "%02x %02x %02x %02x  %s\n", uid[0], uid[1], uid[2], uid[3]);
-
-			write(fifo_fd, str_for_fifo, strlen(str_for_fifo) + 1);
-			//fflush(stdout);
+			fflush(stdout);
 			sleep(1);
 		}
 	}
 	close(fifo_fd);
+	fclose(res);
 }
