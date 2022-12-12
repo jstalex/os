@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 			}
 
 			if (argv[2] != "") {
-				fifo_fd = open(argv[2], 2); // O_RDWR
+				// fifo_fd = open(argv[2], 2); // O_RDWR
 			}
 		}
 	}
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 			//}
 
 			sprintf(readed_uid, "%02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
-			if (strcmp(readed_uid, "<write here>") == 0){
+			if (strcmp(readed_uid, "91 2d 0c 26") == 0){
 				res = fopen("result.txt", "a");
 				fprintf(res, "%s %s\n", "True RFID key", get_time());
 				fclose(res);
