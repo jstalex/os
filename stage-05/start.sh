@@ -7,4 +7,4 @@ pid1=$!
 sudo ./rfid_reader_asp -q rfid_data &
 pid2=$!
 
-kill $pid1 $pid2
+./combiner $pid1 $pid2
