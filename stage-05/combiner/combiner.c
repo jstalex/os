@@ -14,8 +14,10 @@
 void stop() {
     kill(son_pids->pid1, SIGINT);
     kill(son_pids->pid2, SIGINT);
-    exit(0);
+    run = 0;
 }
+
+int run = 1;
 
 struct pids
 {
@@ -38,7 +40,7 @@ void* handle_rfid() {
     int fifo_fd;
     char buffer[80];
     fifo_fd = open("rfid_data", O_RDWR); // O_RDWR
-    while (1) {
+    while (run) {
         if (read(fifo_fd, buffer, sizeof(buffer)) > 0) {
             res = fopen("result.txt", "a");
 		    fprintf(res, "%s\n", buffer);
@@ -46,6 +48,7 @@ void* handle_rfid() {
         }
     }
     close(fifo_fd);
+    pthread_exit(0);
 }
 
 char true_pass[5]  = "1337";
@@ -54,7 +57,7 @@ void* handle_keypad() {
     int fifo_fd;
     char readed_pass[5];
     fifo_fd = open("keypad_data", O_RDWR); // O_RDWR
-    while (1) {
+    while (run) {
         if (read(fifo_fd, readed_pass, sizeof(readed_pass)) > 0) {
             if (strcmp(true_pass, readed_pass) == 0){
                 res = fopen("result.txt", "a");
@@ -64,6 +67,7 @@ void* handle_keypad() {
         }
     }
     close(fifo_fd);
+    pthread_exit(0);
 }
 
 void menu() {
@@ -83,6 +87,7 @@ void menu() {
                 break;
             case 2:
                 stop();
+                f = 0;
                 break;
             case 3:
                 f = 0;
@@ -115,9 +120,12 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "error: pthread_create was failed\n");
 		exit(-1);
     }
-    
+
     // add password changing 
     menu();
+    
+    pthread_join(rfid_thread, NULL);
+	pthread_join(keypad_thread, NULL);
 
     return 0;
 }
