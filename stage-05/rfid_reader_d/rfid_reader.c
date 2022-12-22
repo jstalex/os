@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 	char true_uid[12];
 	char readed_uid[12];
-	char *temp;
+	char temp[50];
 	// FILE *res;
 
 	MFRC522_Init(0);
@@ -116,8 +116,8 @@ int main(int argc, char *argv[])
 				// res = fopen("result.txt", "a");
 				// fprintf(res, "%s %s\n", "True RFID key", get_time());
 				// fclose(res);
-				temp = sprintf("%s %s\n", "True RFID key", get_time());
-				write(fifo_fd, temp, sizeof(temp));
+				sprintf(temp, "%s %s\n", "True RFID key", get_time());
+				write(fifo_fd, temp, strlen(temp));
 			}
 			
 			fflush(stdout);
