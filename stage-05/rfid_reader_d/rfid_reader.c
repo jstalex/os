@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include "MFRC522.h"
 #include "time.h"
+#include "signal.h"
 
 int debug = 0;
 
@@ -48,6 +49,9 @@ const char *get_time(){
     return str;
 }
 
+void handler(int sig) {
+    exit(0);
+}
 
 int main(int argc, char *argv[])
 {
@@ -67,6 +71,8 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+
+	signal(SIGINT, &handler);
 
 	uint8_t mode, bits;
 	int status;

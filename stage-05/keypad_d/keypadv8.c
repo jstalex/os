@@ -25,6 +25,7 @@
 #include <string.h>
 #include<time.h>
 #include <pigpio.h>
+#include "signal.h"
 #define ROWS 4
 #define COLS 3
 
@@ -97,6 +98,10 @@ void help()
 	printf("    -q - quiet\n");
 }
 
+void handler(int sig) {
+    exit(0);
+}
+
 int main(int argc, char *argv[])
 {
 	int quiet = 0;
@@ -114,6 +119,8 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 	}
+
+	signal(SIGINT, &handler);
 
 	gpioInitialise();
 	init_keypad();
