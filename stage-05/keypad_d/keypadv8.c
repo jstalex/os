@@ -154,23 +154,24 @@ int main(int argc, char *argv[])
 					strncat(pass, temp, 1);    
 					curr_ind++;
 				}
-				// printf("%s\n", pass);
-				if (strcmp(pass, "1337") == 0){
-					// printf("%s\n", "im here");
-
-					res = fopen("result.txt", "a");
-					fprintf(res, "%s %s\n", "True Pass", get_time());
-					fclose(res);
-
-					strcpy(pass, "");
-					curr_ind = 0;
-				}
-
+				
 				if (x == (char)'#'){
 					// printf("%s\n", "im here again");
+					write(fifo_fd, pass, strlen(pass));
 					strcpy(pass, "");
 					curr_ind = 0;
 				}
+				// printf("%s\n", pass);
+				// if (strcmp(pass, "1337") == 0){
+				// 	// printf("%s\n", "im here");
+
+				// 	res = fopen("result.txt", "a");
+				// 	fprintf(res, "%s %s\n", "True Pass", get_time());
+				// 	fclose(res);
+
+				// 	strcpy(pass, "");
+				// 	curr_ind = 0;
+				// }
 			}
 		} else if (!quiet)
 			printf("no key pressed\n");

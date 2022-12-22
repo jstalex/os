@@ -11,11 +11,37 @@
 
 const char *get_time();
 
+char true_pass[5] = "1337";
+
 int main(int argc, char *argv[]) {
-    char temp[50];
-    sprintf(temp, "%s %s\n", "True RFID key", get_time());
-    printf("%s\n", temp);
-    return 0;
+    int state;
+    int f = 1;
+    while (f) {
+        printf("Select option:\n 1. Change password\n 2. Stop program\n 3. Quit menu\nEnter option: ");
+        scanf("%d", &state);
+
+        switch (state)
+        {
+            case 1:
+                printf("Enter new password in Foramt XXXX:");
+                scanf("%s", true_pass);
+                printf("%s\n", true_pass);
+                break;
+            case 2:
+                //stop();
+                exit(0);
+                break;
+            case 3:
+                f = 0;
+                system("clear");
+                break;
+            default:
+                printf("imhere\n");
+                f = 0;
+                //system("clear");
+                break;
+        }
+    }
 }
 
 
