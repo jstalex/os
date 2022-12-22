@@ -29,6 +29,10 @@
 #include "MFRC522.h"
 #include "time.h"
 #include "signal.h"
+#include <fcntl.h>
+#include <sys/stat.h> 
+#include <sys/types.h>
+
 
 int debug = 0;
 
@@ -67,7 +71,7 @@ int main(int argc, char *argv[])
 			}
 
 			if (argv[2] != "") {
-				// fifo_fd = open(argv[2], 2); // O_RDWR
+				fifo_fd = open(argv[2], O_RDWR); // O_RDWR
 			}
 		}
 	}
@@ -83,8 +87,8 @@ int main(int argc, char *argv[])
 
 	char true_uid[12];
 	char readed_uid[12];
-
-	FILE *res;
+	char *temp;
+	// FILE *res;
 
 	MFRC522_Init(0);
 	while (1) {
@@ -109,9 +113,11 @@ int main(int argc, char *argv[])
 
 			sprintf(readed_uid, "%02x %02x %02x %02x", uid[0], uid[1], uid[2], uid[3]);
 			if (strcmp(readed_uid, "91 2d 0c 26") == 0){
-				res = fopen("result.txt", "a");
-				fprintf(res, "%s %s\n", "True RFID key", get_time());
-				fclose(res);
+				// res = fopen("result.txt", "a");
+				// fprintf(res, "%s %s\n", "True RFID key", get_time());
+				// fclose(res);
+				temp = sprintf("%s %s\n", "True RFID key", get_time());
+				write(fifo_fd, temp, sizeof(temp));
 			}
 			
 			fflush(stdout);

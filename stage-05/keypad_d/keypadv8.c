@@ -26,6 +26,11 @@
 #include<time.h>
 #include <pigpio.h>
 #include "signal.h"
+#include <fcntl.h> 
+#include <sys/stat.h> 
+#include <sys/types.h>
+
+
 #define ROWS 4
 #define COLS 3
 
@@ -112,7 +117,7 @@ int main(int argc, char *argv[])
 		} else if ((strcmp(argv[1], "-q") == 0)) {
 			quiet = 1;
 			if (argv[2] != "") {
-				// fifo_fd = open(argv[2], O_RDWR); // O_RDWR
+				fifo_fd = open(argv[2], O_RDWR); 
 			}
 		} else {
 			help();
