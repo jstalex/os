@@ -1,4 +1,12 @@
 #include "signal.h"
+#include <fcntl.h>
+#include <sys/stat.h> 
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <inttypes.h>
+#include <string.h>
+#include <stdlib.h>
 
 
 
@@ -13,6 +21,19 @@ struct pids
     int pid2;
 };
 struct pids* son_pids;
+
+FILE* res;
+
+void handle_rfid() {
+    int fifo_fd;
+    fifo_fd = open("rfid_data", O_RDWR); // O_RDWR
+    while (1) {
+        res = fopen("result.txt", "a");
+		fprintf(res, "%s %s\n", "True RFID key", get_time());
+		fclose(res);
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     int pid1 = atoi(argv[1]);

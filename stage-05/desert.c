@@ -1,7 +1,25 @@
+#include "signal.h"
+#include <fcntl.h>
+#include <sys/stat.h> 
+#include <sys/types.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <unistd.h>
+#include <inttypes.h>
 #include <string.h>
-#include<time.h>
+#include <stdlib.h>
+#include "time.h"
+
+const char *get_time();
+
+int main(int argc, char *argv[]) {
+    char temp[50];
+    sprintf(temp, "%s %s\n", "True RFID key", get_time());
+    printf("%s\n", temp);
+    return 0;
+}
+
+
+
 
 
 const char *get_time(){
@@ -13,49 +31,49 @@ const char *get_time(){
 }
 
 
-int main(int argc, char *argv[])
-{
-	FILE *res;
+// int main(int argc, char *argv[])
+// {
+// 	FILE *res;
 
-    char x = '\0';
-    char line[10];
-    char pass[4] = { '\0' };
-    char temp[2];
-    int curr_ind = 0;
+//     char x = '\0';
+//     char line[10];
+//     char pass[4] = { '\0' };
+//     char temp[2];
+//     int curr_ind = 0;
 
-    while (1) { 
-        //scanf("%s", &temp);
-        //sprintf(temp, "%s", line);
+//     while (1) { 
+//         //scanf("%s", &temp);
+//         //sprintf(temp, "%s", line);
         
-        fgets(line, 10, stdin);
+//         fgets(line, 10, stdin);
 
-        if (1) {
-            // sprintf(temp, "%s", line);
-            // printf("index = %d, x = %s, temp = %s\n", curr_ind, temp, temp);
-            if (curr_ind < 4) {
-                strncat(pass, line, 1);    
-                curr_ind++;
-            }
-            // printf("%s\n", pass);
-            if (strcmp(pass, "1337") == 0){
-                printf("%s\n", "im here");
+//         if (1) {
+//             // sprintf(temp, "%s", line);
+//             // printf("index = %d, x = %s, temp = %s\n", curr_ind, temp, temp);
+//             if (curr_ind < 4) {
+//                 strncat(pass, line, 1);    
+//                 curr_ind++;
+//             }
+//             // printf("%s\n", pass);
+//             if (strcmp(pass, "1337") == 0){
+//                 printf("%s\n", "im here");
 
-                res = fopen("result.txt", "a");
-                fprintf(res, "%s %s\n", "True Pass", get_time());
-                fclose(res);
+//                 res = fopen("result.txt", "a");
+//                 fprintf(res, "%s %s\n", "True Pass", get_time());
+//                 fclose(res);
 
-                strcpy(pass, "");
-                curr_ind = 0;
-            }
-            if (line[0] == (char)'#'){
-                printf("%s\n", "im here again");
-                strcpy(pass, "");
-                curr_ind = 0;
-            }
-        }
-    }
-    return 0;
-}
+//                 strcpy(pass, "");
+//                 curr_ind = 0;
+//             }
+//             if (line[0] == (char)'#'){
+//                 printf("%s\n", "im here again");
+//                 strcpy(pass, "");
+//                 curr_ind = 0;
+//             }
+//         }
+//     }
+//     return 0;
+// }
 
 
 
