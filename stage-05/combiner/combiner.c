@@ -8,6 +8,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "time.h"
+#include <sched.h>
+#include <pthread.h>
 
 void stop() {
     kill(son_pids->pid1, SIGINT);
@@ -32,7 +34,7 @@ const char *get_time(){
     return str;
 }
 
-void handle_rfid() {
+void* handle_rfid() {
     int fifo_fd;
     char buffer[80];
     fifo_fd = open("rfid_data", O_RDWR); // O_RDWR
@@ -48,7 +50,7 @@ void handle_rfid() {
 
 char true_pass[5]  = "1337";
 
-void handle_keypad() {
+void* handle_keypad() {
     int fifo_fd;
     char readed_pass[5];
     fifo_fd = open("keypad_data", O_RDWR); // O_RDWR
@@ -100,10 +102,22 @@ int main(int argc, char *argv[]) {
     struct pids temp = {pid1, pid2};
     son_pids = &temp;
     // apply handler to sigint
-    // читаем два канала и выводим инфу в файл отсюда
-    handle_rfid();
-    handle_keypad();
-    // добавить сохранение и удаление паролся
+    // read from fifos and write in file
+    pthread_t rfid_thread;
+    pthread_t keypad_thread;
+
+    if(pthread_create(&rfid_thread, NULL, handle_rfid, NULL) != 0) {
+        fprintf(stderr, "error: pthread_create was failed\n");
+		exit(-1);
+    }
+
+    if(pthread_create(&keypad_thread, NULL, handle_keypad, NULL) != 0) {
+        fprintf(stderr, "error: pthread_create was failed\n");
+		exit(-1);
+    }
+    
+    // add password changing 
     menu();
+
     return 0;
 }
